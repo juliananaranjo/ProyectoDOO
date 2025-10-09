@@ -17,7 +17,7 @@ public final class CityDomain extends Domain {
 		setDepartment(new DepartmentDomain());
 	}
 	
-	public CityDomain(final UUID id) { 
+	public CityDomain(final UUID id) {
 		super(id);
 		setName(TextHelper.getDefault());
 		setDepartment(new DepartmentDomain());
