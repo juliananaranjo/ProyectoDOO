@@ -2,6 +2,7 @@ package co.edu.uco.nese.crosscuting.exception;
 
 import co.edu.uco.nese.crosscuting.helpers.ObjectHelper;
 import co.edu.uco.nese.crosscuting.helpers.TextHelper;
+import co.edu.uco.nese.crosscuting.messagescatalog.MessagesEnum;
 
 public final class NeseException extends RuntimeException {
 
@@ -27,6 +28,10 @@ public final class NeseException extends RuntimeException {
 	public static NeseException create(final Throwable rootException, final String userMessage, final String technicalMessage) {
 		return new NeseException(rootException, userMessage, technicalMessage);
 	}
+	
+    public static NeseException createDaoException(final Exception e, final MessagesEnum userMsg, final MessagesEnum techMsg) {
+        return NeseException.create(e, userMsg.getContent(), techMsg.getContent());
+    }
 	
 	public Throwable getRootException() {
 		return rootException;

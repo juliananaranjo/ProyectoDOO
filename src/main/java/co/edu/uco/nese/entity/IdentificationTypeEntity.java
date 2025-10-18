@@ -1,20 +1,18 @@
 package co.edu.uco.nese.entity;
 
-import jakarta.persistence.*;
 import java.util.UUID;
 
-@Entity
-@Table(name = "IdentificationType")
+import co.edu.uco.nese.crosscuting.helpers.TextHelper;
+import co.edu.uco.nese.crosscuting.helpers.UUIDHelper;
+
 public final class IdentificationTypeEntity {
-	
-	@Id
-	@Column(name = "id", nullable = false, updatable = false)
+
 	private UUID id;
-	
-	@Column(name = "name", nullable = false, length = 50)
 	private String name;
 	
 	public IdentificationTypeEntity() {
+		setId(UUIDHelper.getUUIDHelper().getDefault());
+		setName(TextHelper.getDefault());
 	}
 	
 	public IdentificationTypeEntity(final UUID id, final String name) {
@@ -27,7 +25,7 @@ public final class IdentificationTypeEntity {
 	}
 
 	public void setId(final UUID id) {
-		this.id = id;
+		this.id = UUIDHelper.getUUIDHelper().getDefault(id);
 	}
 
 	public String getName() {
@@ -35,6 +33,6 @@ public final class IdentificationTypeEntity {
 	}
 
 	public void setName(final String name) {
-		this.name = name;
+		this.name = TextHelper.getDefaultWithTrim(name);
 	}
 }

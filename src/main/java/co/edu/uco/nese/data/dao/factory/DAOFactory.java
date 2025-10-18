@@ -1,8 +1,11 @@
 package co.edu.uco.nese.data.dao.factory;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import co.edu.uco.nese.crosscuting.exception.NeseException;
+import co.edu.uco.nese.crosscuting.helpers.SqlConnectionHelper;
+import co.edu.uco.nese.crosscuting.messagescatalog.MessagesEnum;
 import co.edu.uco.nese.data.dao.entity.CityDAO;
 import co.edu.uco.nese.data.dao.entity.CountryDAO;
 import co.edu.uco.nese.data.dao.entity.DepartmentDAO;
@@ -16,14 +19,15 @@ public abstract class DAOFactory {
 	protected static FactoryEnum factory = FactoryEnum.POSTGRESQL;
 	
 	public static DAOFactory getFactory() {
-		switch (factory) {
-		case POSTGRESQL:
+		
+		if (FactoryEnum.POSTGRESQL.equals(factory)) {
 			return new PostgresqlDAOFactory();
-		default:
-			var userMessage ="Factoria no iniciada";
-			var technicalMessage ="Factoria no valida";
+		} else {
+			var userMessage = MessagesEnum.USER_ERROR_DAOFACTORY_NO_VALID_FACTORY.getContent();
+			var technicalMessage = MessagesEnum.TECHNICAL_ERROR_DAOFACTORY_NO_VALID_FACTORY.getContent();
 			throw NeseException.create(userMessage, technicalMessage);
 		}
+
 	}
 	
 	public abstract CityDAO getCityDAO();
@@ -38,35 +42,68 @@ public abstract class DAOFactory {
 	
 	protected abstract void openConnection();
 	
-	protected final void initTransaction() {
-		sqlConnectionHelper.ensureTransactionIsNotStarted(connection);
+	public final void initTransaction() {
+		SqlConnectionHelper.ensureTransactionIsNotStarted(connection);
 		
 		try {
-			Connection.rolback();
-		}cach(final SQLException exception){
-			var userMessage ="";
-			var technicalMessage ="";
+			connection.setAutoCommit(false);
+		} catch (final SQLException exception) {
+			var userMessage = MessagesEnum.USER_ERROR_INITIALIZING_TRANSACTION.getContent();
+			var technicalMessage = MessagesEnum.TECHNICAL_ERROR_INITIALIZING_TRANSACTION.getContent();
 			throw NeseException.create(exception, userMessage, technicalMessage);
-			
-		}catch(final Exception exception){
-			var userMessage ="";
-			var technicalMessage ="";
+		} catch (final Exception exception) {
+			var userMessage = MessagesEnum.USER_ERROR_SQLCONNECTION_UNEXPECTED_ERROR_INITIALIZING_TRANSACTION.getContent();
+			var technicalMessage = MessagesEnum.TECHNICAL_ERROR_SQLCONNECTION_UNEXPECTED_ERROR_INITIALIZING_TRANSACTION.getContent();
 			throw NeseException.create(exception, userMessage, technicalMessage);
 		}
-		
-		
 	}
 	
-	protected final void commitTransaction() {
+	public final void commitTransaction() {
+		SqlConnectionHelper.ensureTransactionIsStarted(connection);
 		
+		try {
+			connection.commit();
+		} catch (final SQLException exception) {
+			var userMessage = MessagesEnum.USER_ERROR_COMMITING_TRANSACTION.getContent();
+			var technicalMessage = MessagesEnum.TECHNICAL_ERROR_COMMITING_TRANSACTION.getContent();
+			throw NeseException.create(exception, userMessage, technicalMessage);
+		} catch (final Exception exception) {
+			var userMessage = MessagesEnum.USER_ERROR_SQLCONNECTION_UNEXPECTED_ERROR_COMMITING_TRANSACTION.getContent();
+			var technicalMessage = MessagesEnum.TECHNICAL_ERROR_SQLCONNECTION_UNEXPECTED_ERROR_COMMITING_TRANSACTION.getContent();
+			throw NeseException.create(exception, userMessage, technicalMessage);
+		}
 	}
 	
-	protected final void rollbackTransaction() {
+	public final void rollbackTransaction() {
+		SqlConnectionHelper.ensureTransactionIsStarted(connection);
 		
+		try {
+			connection.rollback();
+		} catch (final SQLException exception) {
+			var userMessage = MessagesEnum.USER_ERROR_ROLLING_BACK_TRANSACTION.getContent();
+			var technicalMessage = MessagesEnum.TECHNICAL_ERROR_ROLLING_BACK_TRANSACTION.getContent();
+			throw NeseException.create(exception, userMessage, technicalMessage);
+		} catch (final Exception exception) {
+			var userMessage = MessagesEnum.USER_ERROR_SQLCONNECTION_UNEXPECTED_ERROR_ROLLING_BACK_TRANSACTION.getContent();
+			var technicalMessage = MessagesEnum.TECHNICAL_ERROR_SQLCONNECTION_UNEXPECTED_ERROR_ROLLING_BACK_TRANSACTION.getContent();
+			throw NeseException.create(exception, userMessage, technicalMessage);
+		}
 	}
 	
-	protected final void closeConnection() {
-	
+	public final void closeConnection() {
+		SqlConnectionHelper.ensureConnectionIsOpen(connection);
+		
+		try {
+			connection.close();
+		} catch (final SQLException exception) {
+			var userMessage = MessagesEnum.USER_ERROR_CLOSING_CONNECTION.getContent();
+			var technicalMessage = MessagesEnum.TECHNICAL_ERROR_CLOSING_CONNECTION.getContent();
+			throw NeseException.create(exception, userMessage, technicalMessage);
+		} catch (final Exception exception) {
+			var userMessage = MessagesEnum.USER_ERROR_SQLCONNECTION_UNEXPECTED_ERROR_CLOSING_CONNECTION.getContent();
+			var technicalMessage = MessagesEnum.TECHNICAL_ERROR_SQLCONNECTION_UNEXPECTED_ERROR_CLOSING_CONNECTION.getContent();
+			throw NeseException.create(exception, userMessage, technicalMessage);
+		}
 	}
 
 }

@@ -1,12 +1,18 @@
 package co.edu.uco.nese.data.dao.entity.postgresql;
 
+import java.sql.Connection;
 import java.util.List;
 import java.util.UUID;
 
 import co.edu.uco.nese.data.dao.entity.IdentificationTypeDAO;
+import co.edu.uco.nese.data.dao.entity.SqlConnection;
 import co.edu.uco.nese.entity.IdentificationTypeEntity;
 
-public class IdentificationTypePostgresqlDAO implements IdentificationTypeDAO{
+public final class IdentificationTypePostgresqlDAO extends SqlConnection implements IdentificationTypeDAO {
+	
+	public IdentificationTypePostgresqlDAO(final Connection connection) {
+		super(connection);
+	}
 
 	@Override
 	public List<IdentificationTypeEntity> findAll() {

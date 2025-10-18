@@ -1,34 +1,84 @@
 package co.edu.uco.nese.crosscuting.helpers;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import co.edu.uco.nese.crosscuting.exception.NeseException;
+import co.edu.uco.nese.crosscuting.messagescatalog.MessagesEnum;
+
 public class SqlConnectionHelper {
+
+	private SqlConnectionHelper() {
+	}
 	
-	public static void ensureTransactionIsStarted(final java.sql.Connection connection) {
-		try {
-			if (connection.getAutoCommit()) {
-				connection.setAutoCommit(false);
-			}
-		} catch (final java.sql.SQLException exception) {
-			var userMessage = "Se ha presentado un problema al intentar iniciar la transaccion de la conexion a la base de datos";
-			var technicalMessage = "Se ha presentado un problema al intentar iniciar la transaccion de la conexion a la base de datos: "
-					+ exception.getMessage();
-			throw co.edu.uco.nese.crosscuting.exception.NeseException.create(exception, userMessage, technicalMessage);
+	public static void ensureConnectionIsNotNull(final Connection connection) {
+		if (ObjectHelper.isNull(connection)) {
+			var userMessage = MessagesEnum.USER_ERROR_SQLCONNECTION_IS_EMPTY.getContent();
+			var technicalMessage = MessagesEnum.TECHNICAL_ERROR_SQLCONNECTION_IS_EMPTY.getContent();
+			throw NeseException.create(userMessage, technicalMessage);
 		}
 	}
+	
+	public static void ensureConnectionIsOpen(final Connection connection) {
 
-	public static void ensureTransactionIsNotStarted(final java.sql.Connection connection) {
+		ensureConnectionIsNotNull(connection);
+		
+		try {
+			if (connection.isClosed()) {
+				var userMessage = MessagesEnum.USER_ERROR_SQLCONNECTION_IS_CLOSED.getContent();
+				var technicalMessage = MessagesEnum.TECHNICAL_ERROR_SQLCONNECTION_IS_CLOSED.getContent();
+				throw NeseException.create(userMessage, technicalMessage);
+			}
+		} catch (final SQLException exception) {
+			var userMessage = MessagesEnum.USER_ERROR_SQLCONNECTION_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS.getContent();
+			var technicalMessage = MessagesEnum.TECHNICAL_ERROR_SQLCONNECTION_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS.getContent();
+			throw NeseException.create(exception, userMessage, technicalMessage);
+		} catch (final Exception exception) {
+			var userMessage = MessagesEnum.USER_ERROR_SQLCONNECTION_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS.getContent();
+			var technicalMessage = MessagesEnum.TECHNICAL_ERROR_SQLCONNECTION_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS.getContent();
+			throw NeseException.create(exception, userMessage, technicalMessage);
+		}
+	}
+	
+	public static void ensureTransactionIsStarted(final Connection connection) {
+		
+		ensureConnectionIsOpen(connection);
+		
+		try {
+			if (connection.getAutoCommit()) {
+				var userMessage = MessagesEnum.USER_ERROR_TRANSACTION_IS_NOT_STARTED.getContent();
+				var technicalMessage = MessagesEnum.TECHNICAL_ERROR_TRANSACTION_IS_NOT_STARTED.getContent();
+				throw NeseException.create(userMessage, technicalMessage);
+			}
+		} catch (final SQLException exception) {
+			var userMessage = MessagesEnum.USER_ERROR_SQLCONNECTION_UNEXPECTED_ERROR_VALIDATING_TRANSACTION_IS_STARTED.getContent();
+			var technicalMessage = MessagesEnum.TECHNICAL_ERROR_SQLCONNECTION_UNEXPECTED_ERROR_VALIDATING_TRANSACTION_IS_STARTED.getContent();
+			throw NeseException.create(exception, userMessage, technicalMessage);
+		} catch (final Exception exception) {
+			var userMessage = MessagesEnum.USER_ERROR_SQLCONNECTION_UNEXPECTED_ERROR_VALIDATING_TRANSACTION_IS_STARTED.getContent();
+			var technicalMessage = MessagesEnum.TECHNICAL_ERROR_SQLCONNECTION_UNEXPECTED_ERROR_VALIDATING_TRANSACTION_IS_STARTED.getContent();
+			throw NeseException.create(exception, userMessage, technicalMessage);
+		}
+	}
+	
+	public static void ensureTransactionIsNotStarted(final Connection connection) {
+		
+		ensureConnectionIsOpen(connection);
+		
 		try {
 			if (!connection.getAutoCommit()) {
-				var userMessage = "La transaccion de la conexion a la base de datos ya ha sido iniciada";
-				var technicalMessage = "La transaccion de la conexion a la base de datos ya ha sido iniciada, por favor verifique el flujo de su aplicacion";
-				throw co.edu.uco.nese.crosscuting.exception.NeseException.create(userMessage, technicalMessage);
+				var userMessage = MessagesEnum.USER_ERROR_TRANSACTION_IS_STARTED.getContent();
+				var technicalMessage = MessagesEnum.TECHNICAL_ERROR_TRANSACTION_IS_STARTED.getContent();
+				throw NeseException.create(userMessage, technicalMessage);
 			}
-		} catch (final java.sql.SQLException exception) {
-			var userMessage = "Se ha presentado un problema al intentar validar el estado de la transaccion de la conexion a la base de datos";
-			var technicalMessage = "Se ha presentado un problema al intentar validar el estado de la transaccion de la conexion a la base de datos: "
-					+ exception.getMessage();
-			throw co.edu.uco.nese.crosscuting.exception.NeseException.create(exception, userMessage, technicalMessage);
+		} catch (final SQLException exception) {
+			var userMessage = MessagesEnum.USER_ERROR_SQLCONNECTION_UNEXPECTED_ERROR_VALIDATING_TRANSACTION_IS_NOT_STARTED.getContent();
+			var technicalMessage = MessagesEnum.TECHNICAL_ERROR_SQLCONNECTION_UNEXPECTED_ERROR_VALIDATING_TRANSACTION_IS_NOT_STARTED.getContent();
+			throw NeseException.create(exception, userMessage, technicalMessage);
+		} catch (final Exception exception) {
+			var userMessage = MessagesEnum.USER_ERROR_SQLCONNECTION_UNEXPECTED_ERROR_VALIDATING_TRANSACTION_IS_NOT_STARTED.getContent();
+			var technicalMessage = MessagesEnum.TECHNICAL_ERROR_SQLCONNECTION_UNEXPECTED_ERROR_VALIDATING_TRANSACTION_IS_NOT_STARTED.getContent();
+			throw NeseException.create(exception, userMessage, technicalMessage);
 		}
-		
-	
-
+	}
 }

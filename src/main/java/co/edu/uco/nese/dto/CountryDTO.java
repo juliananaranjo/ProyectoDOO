@@ -1,39 +1,39 @@
-package co.edu.uco.nese.entity;
+package co.edu.uco.nese.dto;
 
 import java.util.UUID;
 
 import co.edu.uco.nese.crosscuting.helpers.TextHelper;
 import co.edu.uco.nese.crosscuting.helpers.UUIDHelper;
 
-public final class CountryEntity {
-
+public final class CountryDTO {
+	
 	private UUID id;
 	private String name;
 	
-	public CountryEntity() {
+	public CountryDTO() {
 		setId(UUIDHelper.getUUIDHelper().getDefault());
 		setName(TextHelper.getDefault());
 	}
 	
-	public CountryEntity(final UUID id, final String name) {
+	public CountryDTO(final UUID id, final String name) {
 		setId(id);
 		setName(name);
 	}
-
+	
 	public UUID getId() {
 		return id;
 	}
-
-	public void setId(final UUID id) {
+	
+	private void setId(final UUID id) {
 		this.id = UUIDHelper.getUUIDHelper().getDefault(id);
 	}
-
+	
 	public String getName() {
 		return name;
 	}
-
-	public void setName(final String name) {
-		this.name = TextHelper.getDefaultWithTrim(name);
+	
+	private void setName(final String name) {
+		this.name = TextHelper.getDefault(name);
 	}
 
 }
