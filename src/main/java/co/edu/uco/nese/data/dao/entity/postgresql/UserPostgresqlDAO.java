@@ -6,15 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import co.edu.uco.nese.crosscuting.exception.NeseException;
+import co.edu.uco.nese.crosscuting.helpers.PreparedStatementHelper;
 import co.edu.uco.nese.crosscuting.helpers.SqlConnectionHelper;
 import co.edu.uco.nese.crosscuting.messagescatalog.MessagesEnum;
 import co.edu.uco.nese.data.dao.entity.SqlConnection;
 import co.edu.uco.nese.data.dao.entity.UserDAO;
 import co.edu.uco.nese.data.dao.entity.mapper.UserEntityMapper;
 import co.edu.uco.nese.data.dao.entity.postgresql.builder.UserSqlBuilder;
-import co.edu.uco.nese.crosscuting.helpers.PreparedStatementHelper;
 import co.edu.uco.nese.entity.UserEntity;
+import co.edu.uco.nese.crosscuting.exception.NeseException;
 
 public final class UserPostgresqlDAO extends SqlConnection implements UserDAO {
 
@@ -68,6 +68,7 @@ public final class UserPostgresqlDAO extends SqlConnection implements UserDAO {
     public List<UserEntity> findByFilter(final UserEntity filter) {
         final var params = new ArrayList<Object>();
         final var sql = sqlBuilder.buildSelectByFilter(filter, params);
+
         final var users = new ArrayList<UserEntity>();
 
         try (var ps = getConnection().prepareStatement(sql)) {
@@ -87,30 +88,6 @@ public final class UserPostgresqlDAO extends SqlConnection implements UserDAO {
 
         return users;
     }
-    
-    @Override
-	public UserEntity findByID(UUID id) {
-		final var sql = sqlBuilder.buildSelectById();
-        UserEntity user = null;
-
-        try (var ps = getConnection().prepareStatement(sql)) {
-            ps.setObject(1, id);
-
-            try (var rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    user = UserEntityMapper.map(rs);
-                }
-            }
-        } catch (final SQLException exception) {
-            throw NeseException.createDaoException(
-                    exception,
-                    MessagesEnum.USER_ERROR_DAO_FINDING_USER_BY_ID,
-                    MessagesEnum.TECHNICAL_ERROR_DAO_FINDING_USER_BY_ID
-            );
-        }
-
-        return user;
-	}
 
     @Override
     public void update(final UserEntity entity) {
@@ -144,4 +121,27 @@ public final class UserPostgresqlDAO extends SqlConnection implements UserDAO {
         }
     }
 
+	@Override
+	public UserEntity findByID(UUID id) {
+		final var sql = sqlBuilder.buildSelectById();
+        UserEntity user = null;
+
+        try (var ps = getConnection().prepareStatement(sql)) {
+            ps.setObject(1, id);
+
+            try (var rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    user = UserEntityMapper.map(rs);
+                }
+            }
+        } catch (final SQLException exception) {
+            throw NeseException.createDaoException(
+                    exception,
+                    MessagesEnum.USER_ERROR_DAO_FINDING_USER_BY_ID,
+                    MessagesEnum.TECHNICAL_ERROR_DAO_FINDING_USER_BY_ID
+            );
+        }
+
+        return user;
+	}
 }

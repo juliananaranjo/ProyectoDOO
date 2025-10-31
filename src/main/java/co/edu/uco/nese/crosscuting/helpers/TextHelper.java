@@ -19,7 +19,9 @@ public final class TextHelper {
     	return getDefault(value).trim();
     }
     
-    
+    public static boolean isEmpty(final String value) {
+    	return value == null || value.trim().isEmpty();
+    }
   
 }
 	

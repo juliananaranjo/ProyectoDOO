@@ -28,7 +28,7 @@ public final class PostgresqlDAOFactory extends DAOFactory {
 	    try {
 	        String url = "jdbc:postgresql://localhost:5432/DOO"; 
 	        String user = "postgres";
-	        String password = "jorgealpidio1442"; 
+	        String password = "dinaysol"; 
 
 	        Class.forName("org.postgresql.Driver");
 

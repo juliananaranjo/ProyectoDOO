@@ -3,7 +3,6 @@ package co.edu.uco.nese.data.dao.factory;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import co.edu.uco.nese.crosscuting.exception.NeseException;
 import co.edu.uco.nese.crosscuting.helpers.SqlConnectionHelper;
 import co.edu.uco.nese.crosscuting.messagescatalog.MessagesEnum;
 import co.edu.uco.nese.data.dao.entity.CityDAO;
@@ -12,6 +11,7 @@ import co.edu.uco.nese.data.dao.entity.DepartmentDAO;
 import co.edu.uco.nese.data.dao.entity.IdentificationTypeDAO;
 import co.edu.uco.nese.data.dao.entity.UserDAO;
 import co.edu.uco.nese.data.dao.factory.postgresql.PostgresqlDAOFactory;
+import co.edu.uco.nese.crosscuting.exception.NeseException;
 
 public abstract class DAOFactory {
 	

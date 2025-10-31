@@ -1,12 +1,9 @@
 package co.edu.uco.nese.business.assembler.entity;
 
-import java.util.List;
-
-public interface EntityAssembler<T, D> {
+public interface EntityAssembler <E, D>{
 	
-	T toEntity(D domain);
-	D toDomain(T entity);
+	E toEntity(D domain);
 	
-	List<T> toDTO(List<D> domainList);
+	D toDomain(E entity);
 
 }

@@ -11,6 +11,7 @@ import co.edu.uco.nese.entity.UserEntity;
 public interface UserDAO 
 		extends CreateDAO<UserEntity>, 
 				RetrieveDAO<UserEntity, UUID>, 
-				UpdateDAO<UserEntity>,
-				DeleteDAO<UUID>{
+				UpdateDAO<UserEntity>, 
+				DeleteDAO<UUID> {
+
 }

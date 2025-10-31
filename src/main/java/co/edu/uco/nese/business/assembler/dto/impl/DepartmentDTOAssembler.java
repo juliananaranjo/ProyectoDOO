@@ -2,10 +2,13 @@ package co.edu.uco.nese.business.assembler.dto.impl;
 
 import static co.edu.uco.nese.business.assembler.dto.impl.CountryDTOAssembler.getCountryDTOAssembler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import co.edu.uco.nese.business.assembler.dto.DTOAssembler;
 import co.edu.uco.nese.business.domain.DepartmentDomain;
-import co.edu.uco.nese.crosscuting.helper.ObjectHelper;
-import co.edu.uco.nese.crosscuting.helper.UUIDHelper;
+import co.edu.uco.nese.crosscuting.helpers.ObjectHelper;
+import co.edu.uco.nese.crosscuting.helpers.UUIDHelper;
 import co.edu.uco.nese.dto.DepartmentDTO;
 
 public final class DepartmentDTOAssembler implements DTOAssembler<DepartmentDTO, DepartmentDomain>{
@@ -32,6 +35,17 @@ public final class DepartmentDTOAssembler implements DTOAssembler<DepartmentDTO,
 		var dtoTmp = ObjectHelper.getDefault(dto, new DepartmentDTO());
 		var countryDomainTmp = getCountryDTOAssembler().toDomain(dtoTmp.getCountry());
 		return new DepartmentDomain(dtoTmp.getId(), dtoTmp.getName(), countryDomainTmp);
+	}
+
+	@Override
+	public List<DepartmentDTO> toDTO(List<DepartmentDomain> domainList) {
+		var departmentDtoList = new ArrayList<DepartmentDTO>();
+		
+		for (var departmentDomain : domainList) {
+			departmentDtoList.add(toDTO(departmentDomain));
+		}
+		
+		return departmentDtoList;
 	}
 
 }

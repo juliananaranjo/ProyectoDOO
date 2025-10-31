@@ -12,6 +12,7 @@ public final class NeseException extends RuntimeException {
 	private String technicalMessage;
 	
 	private NeseException(final Throwable rootException, final String userMessage, final String technicalMessage) {
+		super(technicalMessage, rootException);
 		setRootException(rootException);
 		setUserMessage(userMessage);
 		setTechnicalMessage(technicalMessage);
